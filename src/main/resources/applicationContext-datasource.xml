@@ -10,20 +10,21 @@
      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <context:component-scan base-package="com.mmall" annotation-config="true"/>
-
+    <!--Spring中使用到的常量配置-->
     <bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="order" value="2"/>
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
         <property name="locations">
             <list>
+                <!--引用classpath下的datasource.properties-->
                 <value>classpath:datasource.properties</value>
             </list>
         </property>
         <property name="fileEncoding" value="utf-8"/>
     </bean>
 
-
+    <!--配置Spring的数据库连接池DataSource-->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${db.driverClassName}"/>
         <property name="url" value="${db.url}"/>
@@ -56,9 +57,13 @@
         <!--# 检查连接有效性的SQL语句-->
         <property name="validationQuery" value="SELECT 1 FROM dual"/>
     </bean>
-
+    <!--mybatis的sqlSessionFactory的配置,将数据库连接池和*Mapper.xml文件都作为参数传给工厂类, 当要使用一个mapper类时, 直接从工厂中获取
+        mybatis操作数据库的原始做法是new SqlSessionFactoryBuilder.build(Resources.getResourcesAsStream(mybatis-config.xml),
+        即创建一个工厂类时必须先将mybatis的配置文件作为参数传递给工厂类, 然后获取mapper对象:*Mapper = session.getMapper(*Mapper.class),*Mapper是一个接口,
+        通过动态代理生成*Mapper的代理对象, 然后调用代理对象的方法, 实则是调用*Mapper.xml中的自定义Sql-->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
+        <!--将所有的Mapper.xml文件都传给SQLSessionFactoryBean, 由Spring帮我们生成所有的Mapper的bean对象-->
         <property name="mapperLocations" value="classpath*:mappers/*Mapper.xml"></property>
 
         <!-- 分页插件 -->
@@ -75,8 +80,9 @@
         </property>
 
     </bean>
-
+    <!--配置扫描哪些mapper接口, 配合上面配置的*Mapper.xml生成session最后得到Mapper的动态代理对象-->
     <bean name="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--扫描dao包下所有的Mapper接口-->
         <property name="basePackage" value="com.mmall.dao"/>
     </bean>
 
