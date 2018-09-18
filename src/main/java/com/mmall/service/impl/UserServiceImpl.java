@@ -28,6 +28,7 @@ public class UserServiceImpl implements IUserService {
         int resultCount = userMapper.checkUsername(username);
         if(resultCount == 0 ){
             return ServerResponse.createByErrorMessage("用户名不存在");
+
         }
 
         String md5Password = MD5Util.MD5EncodeUtf8(password);

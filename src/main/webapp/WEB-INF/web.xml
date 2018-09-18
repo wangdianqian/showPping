@@ -42,11 +42,6 @@
     <servlet>
         <servlet-name>dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <!--SpringMVC默认寻找的配置文件就是/WEB-INF/dispatcher-servlet.xml-->
-        <init-param>
-            <param-name>contextConfigLocation</param-name>
-            <param-value>/WEB-INF/dispatcher-servlet.xml</param-value>
-        </init-param>
         <!--为0或1时表示在服务器启动时就初始化拦截器-->
         <load-on-startup>1</load-on-startup>
     </servlet>
